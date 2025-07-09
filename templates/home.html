@@ -29,12 +29,12 @@
 </head>
 
 <body>
-  <div class="container py-4 mt-3 position-relative">
+  <div class="container py-4 mt-3 position-relative bs-success" style="background-color: #D4FFCA">
     <div class="text-center">
       <div class="d-inline-flex align-items-center">
         <img src="{{ url_for('static', filename='/images/jungle_logo.png')}}" alt="정글 이미지 로고" style="height: 60px"
           class="me-3" />
-        <h1 class="text-center display-4 mb-0">TIL JUNGLE</h1>
+        <h1 class="text-center display-4 mb-0 fw-bold">TIL JUNGLE</h1>
       </div>
       <div class="position-absolute top-0 end-0 mt-5 me-5">
         <a href="/mypage" class="btn btn-warning me-1">
@@ -67,7 +67,11 @@
       >
         {% for card in cards %}
         <div class="col">
-          <div class="card h-100 card-clickable" data-url="{{ card.url }}">
+          <div class="d-flex justify-content-left mb-2">
+          <button class="btn btn-sm btn-primary me-1">Week 0</button>
+          <button class="btn btn-sm btn-success">질문하기</button>
+        </div>
+          <div class="card h-120 card-clickable" data-url="{{ card.url }}">
             <img
               src="{{ card.img }}"
               class="card-img-top"
@@ -101,7 +105,6 @@
       {% endfor %}
     </div>
       <div id="scroll-anchor" class="my-4"></div>
-
   </div>
 
   <!-- bootstrap js -->
