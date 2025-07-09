@@ -1,5 +1,9 @@
+from bson import datetime
 from models.database import cards_collection
 from flask import Blueprint, jsonify, request
+from utils.auth_required import auth_required
+from utils.bs4_crawler import fetch_thumbnail
+
 
 card_bp = Blueprint('card', __name__)
 
@@ -35,7 +39,7 @@ def search_card(keyword):
             "success": False,
             "message": f"카드 검색 실패: {str(e)}"
         }
-
+    
 def get_cards(page):
     per_page = 12
     skip_count = (page - 1) * per_page
