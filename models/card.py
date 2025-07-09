@@ -53,17 +53,21 @@ def get_cards(page):
         })
     return cards
 
-@card_bp.route("/load_cards")
+@card_bp.route("/load_cards", methods=["POST", "GET"])
 def load_cards():
-    keyword = request.args.get("keyword", "").strip()
-    page = int(request.args.get("page", 1))
+    try:
+        data = request.get_json()
 
-    if keyword:
-        result = search_card(keyword)
-        if result["success"]:
-            return jsonify({"result": "success", "cards": result["cards"]})
+        keyword = data.get("keyword", "").strip()
+
+        if keyword:
+            result = search_card(keyword)
+            if result["success"]:
+                return jsonify({"result": "success", "cards": result["cards"]})
+            else:
+                return jsonify({"result": "error", "message": result["message"]})
         else:
-            return jsonify({"result": "error", "message": result["message"]})
-    else:
-        cards = get_cards(page)
-        return jsonify({"result": "success", "cards": cards})
+            return jsonify({"result": "error", "message": "검색어가 비어 있습니다."})
+
+    except Exception as e:
+        return jsonify({"result": "error", "message": f"서버 에러: {str(e)}"})
