@@ -36,7 +36,7 @@
 
   <!-- 검색 폼 -->
   <div class="container my-4">
-    <form class="row justify-content-center">
+    <form class="row justify-content-center" id="searchForm">
       <div class="col-auto">
         <input type="text" class="form-control" placeholder="제목 혹은 태그 검색" id="tagSearchInput" name="tag" />
       </div>
@@ -45,6 +45,13 @@
       </div>
     </form>
   </div>
+  
+  <!-- 검색 JS -->
+  <script>
+    document.getElementById('searchForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+    });
+  </script>
 
     <!-- 카드 리스트 -->
     <div class="container mt-4">
