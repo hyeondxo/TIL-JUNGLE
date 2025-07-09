@@ -1,115 +1,136 @@
 import requests
-import urllib.parse
 from config import Config
+import logging
 
-def get_slack_oauth_url(state):
-    """Slack OAuth 인증 URL 생성"""
+logger = logging.getLogger(__name__)
+
+def get_slack_members():
+    """관리자 토큰으로 워크스페이스 멤버 정보 가져오기"""
     try:
-        base_url = "https://slack.com/oauth/v2/authorize"
-        
-        params = {
-            'client_id': Config.SLACK_CLIENT_ID,
-            'scope': 'users:read,users:read.email',
-            'redirect_uri': f"{Config.BASE_URL}/auth/slack/callback",
-            'state': state,
-            'user_scope': 'users:read,users:read.email'
+        url = "https://slack.com/api/users.list"
+        headers = {
+            "Authorization": f"Bearer {Config.SLACK_BOT_TOKEN}",
+            "Content-Type": "application/json"
         }
         
-        # Team ID가 설정되어 있으면 추가 (워크스페이스 직접 지정)
-        if Config.SLACK_TEAM_ID:
-            params['team'] = Config.SLACK_TEAM_ID
+        response = requests.get(url, headers=headers)
+        data = response.json()
         
-        # URL 인코딩
-        query_string = urllib.parse.urlencode(params)
-        oauth_url = f"{base_url}?{query_string}"
-        
-        print(f"🔗 생성된 OAuth URL: {oauth_url}")  # 디버깅용
-        
-        return oauth_url
+        if not data.get('ok'):
+            logger.error(f"Slack API 오류: {data.get('error')}")
+            return None
+            
+        members = []
+        for member in data.get('members', []):
+            # 봇이나 삭제된 사용자 제외
+            if member.get('deleted') or member.get('is_bot'):
+                continue
+                
+            profile = member.get('profile', {})
+            
+            # 이메일이 있는 멤버만 포함
+            if profile.get('email'):
+                member_info = {
+                    'slack_user_id': member.get('id'),
+                    'slack_team_id': member.get('team_id'),
+                    'name': profile.get('display_name') or profile.get('real_name') or member.get('name'),
+                    'email': profile.get('email'),
+                    'avatar_url': profile.get('image_192') or profile.get('image_512'),
+                    'real_name': profile.get('real_name'),
+                    'display_name': profile.get('display_name'),
+                    'title': profile.get('title', ''),
+                    'phone': profile.get('phone', ''),
+                    'is_active': not member.get('deleted', False)
+                }
+                members.append(member_info)
+                
+        logger.info(f"Slack에서 {len(members)}명의 멤버 정보를 가져왔습니다.")
+        return members
         
     except Exception as e:
-        print(f"Slack OAuth URL 생성 실패: {e}")
+        logger.error(f"Slack 멤버 정보 가져오기 실패: {str(e)}")
         return None
 
-def exchange_code_for_token(code):
-    """인증 코드를 액세스 토큰으로 교환"""
+def test_slack_connection():
+    """Slack 연결 테스트"""
     try:
-        url = "https://slack.com/api/oauth.v2.access"
-        
-        data = {
-            'client_id': Config.SLACK_CLIENT_ID,
-            'client_secret': Config.SLACK_CLIENT_SECRET,
-            'code': code,
-            'redirect_uri': f"{Config.BASE_URL}/auth/slack/callback"
-        }
-        
-        response = requests.post(url, data=data)
-        result = response.json()
-        
-        if result.get('ok'):
-            return {
-                'success': True,
-                'access_token': result['authed_user']['access_token'],
-                'team_id': result['team']['id'],
-                'user_id': result['authed_user']['id']
-            }
-        else:
-            print(f"토큰 교환 실패: {result.get('error')}")
-            return {
-                'success': False, 
-                'error': result.get('error', 'unknown_error')
-            }
-            
-    except Exception as e:
-        print(f"토큰 교환 중 오류: {e}")
-        return {'success': False, 'error': str(e)}
-
-def get_slack_user_info(access_token):
-    """Slack 사용자 정보 조회"""
-    try:
-        url = "https://slack.com/api/users.info"
-        
+        url = "https://slack.com/api/auth.test"
         headers = {
-            'Authorization': f'Bearer {access_token}'
+            "Authorization": f"Bearer {Config.SLACK_BOT_TOKEN}",
+            "Content-Type": "application/json"
         }
         
-        # 먼저 현재 사용자의 ID를 가져옴
-        auth_response = requests.get(
-            "https://slack.com/api/auth.test",
-            headers=headers
-        )
-        auth_result = auth_response.json()
+        response = requests.get(url, headers=headers)
+        data = response.json()
         
-        if not auth_result.get('ok'):
-            return {
-                'success': False,
-                'error': auth_result.get('error', 'auth_test_failed')
-            }
-            
-        user_id = auth_result['user_id']
-        team_id = auth_result['team_id']
-        
-        # 사용자 상세 정보 조회
-        params = {'user': user_id}
-        response = requests.get(url, headers=headers, params=params)
-        result = response.json()
-        
-        if result.get('ok'):
-            user_data = result['user']
-            # team 정보 추가
-            user_data['team'] = {'id': team_id}
-            
-            return {
-                'success': True,
-                'user_data': user_data
-            }
+        if data.get('ok'):
+            print(f"✅ Slack 연결 성공!")
+            print(f"   봇 이름: {data.get('user')}")
+            print(f"   팀 이름: {data.get('team')}")
+            print(f"   팀 ID: {data.get('team_id')}")
+            return True
         else:
-            print(f"사용자 정보 조회 실패: {result.get('error')}")
-            return {
-                'success': False,
-                'error': result.get('error', 'user_info_failed')
-            }
+            print(f"❌ Slack 연결 실패: {data.get('error')}")
+            return False
             
     except Exception as e:
-        print(f"사용자 정보 조회 중 오류: {e}")
-        return {'success': False, 'error': str(e)}
+        print(f"❌ Slack 연결 테스트 실패: {str(e)}")
+        return False
+
+
+def sync_slack_to_users():
+    """Slack 멤버 정보를 기존 users 컬렉션과 매칭하여 업데이트"""
+    from models.user import update_user_slack_info, find_user_by_email
+    
+    try:
+        # 1. Slack 멤버 정보 가져오기
+        slack_members = get_slack_members()
+        if not slack_members:
+            return {"success": False, "message": "Slack 멤버 정보를 가져올 수 없습니다"}
+        
+        matched_count = 0
+        unmatched_count = 0
+        updated_count = 0
+        
+        # 2. 각 Slack 멤버를 기존 사용자와 매칭
+        for member in slack_members:
+            email = member['email']
+            existing_user = find_user_by_email(email)
+            
+            if existing_user:
+                # 기존 사용자가 있으면 Slack 정보 업데이트
+                slack_data = {
+                    'slack_user_id': member['slack_user_id'],
+                    'slack_team_id': member['slack_team_id'],
+                    'avatar_url': member['avatar_url'],
+                    'real_name': member['real_name'],
+                    'display_name': member['display_name']
+                }
+                
+                result = update_user_slack_info(email, slack_data)
+                if result['success']:
+                    matched_count += 1
+                    updated_count += 1
+                    logger.info(f"매칭 성공: {member['name']} ({email})")
+                else:
+                    logger.warning(f"업데이트 실패: {email} - {result['message']}")
+            else:
+                # 기존 사용자가 없으면 스킵
+                unmatched_count += 1
+                logger.info(f"매칭 실패: {member['name']} ({email}) - 회원가입 안함")
+        
+        result_message = f"동기화 완료: 매칭 {matched_count}명, 미매칭 {unmatched_count}명"
+        logger.info(result_message)
+        
+        return {
+            "success": True,
+            "message": result_message,
+            "matched_count": matched_count,
+            "unmatched_count": unmatched_count,
+            "updated_count": updated_count
+        }
+        
+    except Exception as e:
+        error_message = f"Slack 동기화 실패: {str(e)}"
+        logger.error(error_message)
+        return {"success": False, "message": error_message}

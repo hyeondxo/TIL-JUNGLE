@@ -300,6 +300,11 @@
       $(document).on("click", ".text-primary", function() {
       const cardId = $(this).data("id");
       const likeCountSpan = $(this).siblings(".card-likes");
+        
+      $(document).on("click", ".text-primary", function() {
+      const cardId = $(this).data("id");
+      const likeCountSpan = $(this).siblings(".card-likes");
+        console.log("Clicked cardId:", cardId); // 디버깅용
 
       $.ajax({
         url: `/models/like_card/${cardId}`,
