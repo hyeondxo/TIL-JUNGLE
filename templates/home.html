@@ -77,7 +77,8 @@
       });
     });
     
-  // 카드 HTML을 생성하고 렌더링하는 함수
+  // 카드 검색시 render하는 함수
+  
   function renderCards(cards) {
     const cardList = document.getElementById("card-list");
     cardList.innerHTML = "";  // 기존 카드 삭제
@@ -88,7 +89,7 @@
     }
 
     for (let card of cards) {
-      const cardHtml = `
+        const cardHtml = `
         <div class="col">
           <div class="card h-100">
             <img
@@ -102,11 +103,16 @@
                 ${card.title}
               </h5>
 
-              <p class="card-text mb-1 text-muted">by ${card.author}</p>
+              <p class="card-text mb-1 text-muted">by ${
+                card.author
+              }</p>
 
               <p class="card-text">
                 ${card.tag_list
-                  .map(tag => `<span class="badge bg-secondary">${tag}</span>`)
+                  .map(
+                    (tag) =>
+                      `<span class="badge bg-secondary">${tag}</span>`
+                  )
                   .join(" ")}
               </p>
 
@@ -125,8 +131,9 @@
       `;
       $("#card-list").append(cardHtml);
     }
-  }
-  
+  page += 1;
+}
+
 </script>
 
     <!-- 카드 리스트 -->
