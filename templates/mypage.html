@@ -149,7 +149,7 @@
 
     <div class="row justify-content-center mt-5">
       <label class="form-label fw-bold fs-4 text-center"
-        >{{ current_user.name}}이 작성한 TIL</label
+        >📝 {{ current_user.name}}이 작성한 TIL</label
       >
     </div>
     <!-- 내가 작성한 TIL 목록 -->
@@ -192,6 +192,7 @@
         {% endfor %}
       </div>
     </div>
+    <div class="container mt-4 mb-5"></div>
 
     <!-- bootstrap js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js"></script>
@@ -209,7 +210,7 @@
             success: function (response) {
               if (response.success) {
                 alert("로그아웃되었습니다.");
-                window.location.href = "/";
+                window.location.replace("/");
               } else {
                 alert("로그아웃 실패: " + response.message);
               }
@@ -252,8 +253,8 @@
               alert("좋아요 실패: " + response.message);
             }
           },
-          error: function () {
-            alert("좋아요 요청 중 오류가 발생했습니다.");
+          error: function (xhr) {
+            alert(xhr.responseJSON.message);
           },
         });
       });
