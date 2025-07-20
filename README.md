@@ -11,28 +11,28 @@ TIL-JUNGLE Slack 워크스페이스에 참여한 후, TIL 작성자와 질문하
 | 이름 | [박도현](https://github.com/hyeondxo)| [이승헌](https://github.com/lsh0927) | [김도훈](https://github.com/sisyphusman) |
 | :-: | :-: | :-: | :-: |
 | 프로필 | ![박도현](https://github.com/hyeondxo.png) | ![이승헌](https://github.com/lsh0927.png) | ![김도훈](https://github.com/sisyphusman.png) |
-| 역할 | 1. 화면 별 SSR/CSR 기능<br> 2. 검색/무한스크롤 카드 렌더링 기능 <br> 3. URL 검증 및 TIL 카드 생성 기능 <br> 4. 마이페이지 데이터 바인딩 | 1. 서버 구축 <br> 2. 슬랙 계정 연동 및 로그인 기능  <br> 3. 질문하기, 대화수집 기능 <br> 4. Q&A 게시판 제작 및 비공개 대화 공개 기능 | 1. 슬랙 API 초기 구축 <br> 2. bs4를 활용한 썸네일 크롤링 기능 <br> 3. 카드 검색 기능 <br> 4. 사용자 별 데이터 수집 기능 |
+| 역할 | 1. 화면 별 SSR/CSR 기능<br> 2. 검색/무한스크롤 카드 렌더링 기능 <br> 3. URL 검증 및 TIL 카드 생성 기능 <br> 4. 마이페이지 데이터 바인딩 | 1. 서버 구축 <br> 2. 슬랙 계정 연동 및 로그인 기능  <br> 3. 질문하기, 대화수집 기능 <br> 4. Q&A 게시판 제작 및 비공개 대화 공개 기능 | 1. 슬랙 API 초기 구축 <br> 2. bs4 썸네일 크롤링 기능 <br> 3. 카드 검색 기능 <br> 4. 사용자 별 데이터 수집 기능 |
 
 ## 주요 페이지
 
 |        로그인         |        회원가입        |
 | :------------------: | :--------------------: |
-| ![](/assets/로그인.png) | ![](/assets/회원가입.png) |
+| <img src="/assets/로그인.png" width="500px"> | <img src="/assets/회원가입.png" width="500px"> |
 
-|         Slack 워크스페이스 초대         |        Slack 로그인        |
+|         Slack 워크스페이스 참여         |        Slack 로그인        |
 | :------------------: | :--------------------: |
-| ![](/assets/슬랙초대.png) | ![](/assets/슬랙로그인.png) |
+| <img src="/assets/슬랙초대.png" width="500px"> | <img src="/assets/슬랙로그인.png" width="500px"> |
 
 |        이메일 인증         |        인증 코드 확인        |
 | :------------------: | :--------------------: |
-| ![](/assets/이메일인증.png) | ![](/assets/인증코드확인.png) |
+| <img src="/assets/이메일인증.png" width="500px"> | <img src="/assets/인증코드확인.png" width="500px"> |
 
 
 ## TIL 
 
 |        메인         |         원본 링크 이동        |
 | :------------------: | :--------------------: |
-| ![](/assets/메인.png) | ![](/assets/원본링크이동.png) |
+| <img src="/assets/메인.png" width="500px"> | <img src="/assets/원본링크이동.png" width="500px"> |
 
 
 BEST TIL : 좋아요 순 상위 4개의 TIL 정렬 <br>
@@ -45,7 +45,7 @@ BEST TIL : 좋아요 순 상위 4개의 TIL 정렬 <br>
 
 |        TIL 카드 생성         |         마이 페이지        |
 | :------------------: | :--------------------: |
-| ![](/assets/TIL생성.png) | ![](/assets/마이페이지.png) |
+| <img src="/assets/TIL생성.png" width="500px"> | <img src="/assets/마이페이지.png" width="500px"> |
 
 - **카드 생성 시 validators를 통한 올바른 URL 검증 수행**
 - **Slack User 정보를 바탕으로 사용자별 모든 정보 렌더링**
@@ -54,7 +54,7 @@ BEST TIL : 좋아요 순 상위 4개의 TIL 정렬 <br>
 
 |        질문하기        |         대화 내용 수집        |
 | :------------------: | :--------------------: |
-| ![](/assets/질문하기.png) | ![](/assets/대화내용수집.png) |
+| <img src="/assets/질문하기.png" width="500px"> | <img src="/assets/대화내용수집.png" width="500px"> |
 
 질문하기 버튼 클릭 시 해당 TIL 작성자와의 1:1 DM 채널 생성 <br>
 대화수집 버튼 클릭 시 작성자와 대화한 모든 기록을 수집하며 데이터베이스에 저장, 수집 시점을 바탕으로 버전 별 관리
